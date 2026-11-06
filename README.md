@@ -82,7 +82,9 @@ C:\Users\<you>\.dsh\profiles\desktop\node_modules\dsh-foxy
 
 下一轮 Foxy 会话会把最近 N 条注入 `[长期记忆]`。默认值是 20 条，可用 `memoryContextEntries` 调整。
 
-它不依赖 ChatLuna。如果要接 `chatluna-livingmemory`，安装 `koishi-plugin-foxy-memory-bridge`，在 `dsh-foxy-memory` 里配置 `provider: livingmemory`、`bridgeUrl`、`bridgeToken`。桥通过 `ctx.chatluna_living_memory.createMemory(...)` 写入 `foxy3（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。
+记忆不是逐条写：`dsh-foxy-memory` 会按 `batchSize`（默认 8）和 `flushIntervalMs`（默认 30 秒）调用桥的 `/ingest`，由模型提炼成中文、Foxy 第一人称的长期记忆。Foxy 左侧面板的「记忆桥设置」可以改桥地址、token、预设、批次、提取模型，保存到 `$DSH_HOME/foxy/settings.json`，不必改 profile 文件。
+
+它不依赖 ChatLuna。如果要接 `chatluna-livingmemory`，安装 `koishi-plugin-foxy-memory-bridge`，在设置页填 `bridgeUrl`、`bridgeToken`、`bridgePresetId`。桥通过 `ctx.chatluna_living_memory.createMemory(...)` 写入 `foxy3（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。
 
 ## 配置
 
