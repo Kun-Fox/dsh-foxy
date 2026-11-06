@@ -1,0 +1,51 @@
+{
+  "name": "dsh-foxy",
+  "version": "0.3.0",
+  "description": "Foxy — a DSH agent preset with a foxy3 persona and an extension-contract layer for memory, transports and capabilities.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./preset": "./lib/preset.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    },
+    "manifestVersion": 1
+  },
+  "files": [
+    "lib",
+    "presets",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Kun-Fox",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kun-Fox/dsh-foxy.git"
+  },
+  "homepage": "https://github.com/Kun-Fox/dsh-foxy#readme",
+  "bugs": {
+    "url": "https://github.com/Kun-Fox/dsh-foxy/issues"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "agent-preset",
+    "foxy",
+    "persona"
+  ],
+  "license": "MIT"
+}

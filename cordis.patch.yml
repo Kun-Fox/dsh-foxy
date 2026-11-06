@@ -1,0 +1,29 @@
+# dsh-foxy bundle patch.
+#
+# Installed through the official CLI:
+#   dsh plugin --profile desktop add file:D:\...\dsh-foxy
+#
+# 1. `dsh-foxy` is the host: registry + status API + extension contracts.
+# 2. `preset-foxy` registers the `Foxy` agent preset. Its only child plugin is
+#    `dsh-foxy/preset`, which projects the foxy3 persona into the system prompt.
+- insert:
+    - id: dsh-foxy
+      name: dsh-foxy
+      config:
+        presetId: foxy3
+
+    - id: preset-foxy
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: foxy
+        name: Foxy
+        description: 和 Foxy 聊天。人设来自 foxy3，记忆由 dsh-foxy-memory 子插件接入。
+        order: 5
+        plugins:
+          - id: foxy-preset
+            name: 'dsh-foxy/preset'
+            config:
+              presetId: foxy3
+              enableTools: false
+              includeRuntimeContext: false
+              memoryContextEntries: 20
