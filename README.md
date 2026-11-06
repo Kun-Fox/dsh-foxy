@@ -11,7 +11,7 @@ DSH 会话（选择 Foxy preset）
         │
    dsh-foxy-memory（可选，本地记忆）
         │
-   foxy-memory-livingmemory（可选桥，未来）
+   koishi-plugin-foxy-memory-bridge（可选，LivingMemory 桥）
 ```
 
 ## 安装
@@ -82,7 +82,7 @@ C:\Users\<you>\.dsh\profiles\desktop\node_modules\dsh-foxy
 
 下一轮 Foxy 会话会把最近 N 条注入 `[长期记忆]`。默认值是 20 条，可用 `memoryContextEntries` 调整。
 
-它不依赖 ChatLuna。未来如果要接 `chatluna-livingmemory`，建议单独做一个 Koishi 侧 HTTP/WS 桥，通过 `ctx.chatluna_living_memory.createMemory(...)` 写入 `foxy3（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。桥插件不在本包内。
+它不依赖 ChatLuna。如果要接 `chatluna-livingmemory`，安装 `koishi-plugin-foxy-memory-bridge`，在 `dsh-foxy-memory` 里配置 `provider: livingmemory`、`bridgeUrl`、`bridgeToken`。桥通过 `ctx.chatluna_living_memory.createMemory(...)` 写入 `foxy3（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。
 
 ## 配置
 
@@ -122,7 +122,7 @@ ctx.foxy.status()
 
 ## 限制
 
-- 还没有 livingmemory 直连桥；当前只有本地 JSONL 记忆。
+- LivingMemory 桥是独立 Koishi 插件；未安装/未配置时退回本地 JSONL。
 - Foxy 会话默认无工具，这是刻意的安全默认值。
 - 会话中途切换 preset 取决于 DSH 版本；最稳妥是新建 Foxy 会话。
 - 侧栏面板是状态页，不是聊天页；聊天请用 DSH 原生对话。
