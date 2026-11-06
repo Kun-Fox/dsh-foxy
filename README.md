@@ -2,7 +2,7 @@
 
 Foxy 是 DeepSeek Harness 的一个 **agent preset**：它把 `foxy3` 的人设投影成该会话的系统提示词，并把记忆、平台、能力留给独立子插件。
 
-它**不是**另一个聊天应用，也没有自己的聊天面板/API。聊天使用 DSH 原生会话；左侧栏的 Foxy 面板只显示当前预设、记忆状态和扩展契约。
+它**不是**另一个聊天应用，也没有自己的聊天面板/API。聊天使用 DSH 原生会话；左侧栏的 Foxy 面板是配置页，用来改预设、记忆保存方式和桥接参数。
 
 ```
 DSH 会话（选择 Foxy preset）
@@ -38,7 +38,22 @@ C:\Users\<you>\.dsh\profiles\desktop\node_modules\dsh-foxy
 3. 直接说话即可；上下文、工具、模型选择都由 DSH 原生运行时处理。
 4. 切回 `standard` 或其他 preset，就恢复普通 DSH。Foxy 不会常驻。
 
-`enableTools: false`（默认）时，Foxy 会话会隐藏继承的工具；需要工具时在 preset 配置里改成 `true`。
+`enableTools: false`（默认）时，Foxy 会话会隐藏继承的工具；需要工具时在左侧 Foxy 设置页打开，保存后对新会话生效。
+
+## 左侧栏设置
+
+Foxy 左侧面板提供常用设置，保存到：
+
+```text
+%USERPROFILE%\.dsh\foxy\settings.json
+```
+
+- 预设文件：下拉选择 `presetsDir` 里的文件，也可以手填绝对路径；
+- 注入记忆条数、是否允许 DSH 工具、是否附加运行时上下文；
+- 记忆保存方式：`LivingMemory`（Koishi 桥）或本地 JSONL；
+- 桥地址、Token、LivingMemory 预设、批量大小、定时冲刷、提取模型。
+
+保存后，记忆子插件会尝试热重载；预设相关的改动对**新会话**生效。
 
 ## 预设
 
@@ -73,22 +88,21 @@ C:\Users\<you>\.dsh\profiles\desktop\node_modules\dsh-foxy
 %USERPROFILE%\.dsh\foxy\memory\entries.jsonl
 ```
 
-每条记录带 `presetId`、`sessionId`、`platform=dsh`、`sourceLabel=DSH`、说话人和时间，例如：
+每条记录带 `presetId`、`sessionId`、`platform=dsh`、`sourceLabel=DSH`、说话人和时间。桥提炼出的长期记忆会明确写“在 DSH 私聊里”，例如：
 
 ```text
-- [2026-11-06 20:00] [DSH] kunfox: 今天在 DSH 做了……
-- [2026-11-06 20:00] [DSH] Foxy: 记住啦。
+我记得在 DSH 私聊里，kunfox 说今天在调 Foxy 的记忆桥。
 ```
 
 下一轮 Foxy 会话会把最近 N 条注入 `[长期记忆]`。默认值是 20 条，可用 `memoryContextEntries` 调整。
 
-记忆不是逐条写：`dsh-foxy-memory` 会按 `batchSize`（默认 8）和 `flushIntervalMs`（默认 30 秒）调用桥的 `/ingest`，由模型提炼成中文、Foxy 第一人称的长期记忆。Foxy 左侧面板的「记忆桥设置」可以改桥地址、token、预设、批次、提取模型，保存到 `$DSH_HOME/foxy/settings.json`，不必改 profile 文件。
+记忆不是逐条写：`dsh-foxy-memory` 会按 `batchSize`（默认 8）和 `flushIntervalMs`（默认 30 秒）调用桥的 `/ingest`，由模型提炼成中文、Foxy 第一人称的长期记忆。提示词要求写成“我记得在 DSH 私聊里，……”，并避免“kunfox 说/回复”这种流水账。左侧面板的「记忆保存」可以改桥地址、token、预设、批次、提取模型，不必改 profile 文件。
 
 它不依赖 ChatLuna。如果要接 `chatluna-livingmemory`，安装 `koishi-plugin-foxy-memory-bridge`，在设置页填 `bridgeUrl`、`bridgeToken`、`bridgePresetId`。桥通过 `ctx.chatluna_living_memory.createMemory(...)` 写入 `foxy3（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。
 
 ## 配置
 
-Host（`dsh-foxy`）只有 `presetId`，默认 `foxy3`。
+Host（`dsh-foxy`）的常用配置都在左侧 Foxy 设置页；对应 `$DSH_HOME/foxy/settings.json`。
 
 Agent preset 子插件（`dsh-foxy/preset`）：
 

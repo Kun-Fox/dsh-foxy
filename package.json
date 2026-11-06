@@ -1,6 +1,6 @@
 {
   "name": "dsh-foxy",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Foxy — a DSH agent preset with a foxy3 persona and an extension-contract layer for memory, transports and capabilities.",
   "type": "module",
   "main": "lib/index.js",
