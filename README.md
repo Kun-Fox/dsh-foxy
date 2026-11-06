@@ -1,6 +1,6 @@
 # dsh-foxy
 
-Foxy 是 DeepSeek Harness 的一个 **agent preset**：它把 `foxy3` 的人设投影成该会话的系统提示词，并把记忆、平台、能力留给独立子插件。
+Foxy 是 DeepSeek Harness 的一个 **agent preset**：它把预设投影成该会话的系统提示词，并把记忆、平台、能力留给独立子插件。
 
 它**不是**另一个聊天应用，也没有自己的聊天面板/API。聊天使用 DSH 原生会话；左侧栏的 Foxy 面板是配置页，用来改预设、记忆保存方式和桥接参数。
 
@@ -108,7 +108,7 @@ Agent preset 子插件（`dsh-foxy/preset`）：
 
 | 字段 | 默认 | 说明 |
 | --- | --- | --- |
-| `presetId` | `foxy3` | 读取哪个预设文件 |
+| `presetId` | `预设` | 读取哪个预设文件 |
 | `presetPath` | 空 | 直接指定预设路径；优先于 `presetId` |
 | `enableTools` | `false` | 是否让 Foxy 会话继承 DSH 工具 |
 | `includeRuntimeContext` | `false` | 是否附加 DSH 运行时上下文 |
