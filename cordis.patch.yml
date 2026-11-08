@@ -11,6 +11,7 @@
       name: dsh-foxy
       config:
         presetId: foxy3
+        promptSuffix: ''
 
     - id: preset-foxy
       name: '@deepseek-ai/dsh-agent-preset'

@@ -67,20 +67,20 @@ Foxy 左侧面板提供常用设置，保存到：
 默认读取：
 
 ```text
-%USERPROFILE%\.dsh\foxy\presets\foxy3.yml
+%USERPROFILE%\.dsh\foxy\presets\preset.yml
 ```
 
 也可以用 `presetPath` 指向任意 Foxy/Character 预设文件，例如 ChatLuna 的：
 
 ```text
-...\data\chathub\character\presets\foxy3.yml
+...\data\chathub\character\presets\preset.yml
 ```
 
 读取规则：
 
 - 有 `persona:` 块：直接使用；
 - 只有 Character 的 `system:` 块：自动投影，只保留角色设定标题（基本设定、详细设定、真实身世、语言风格、发言风格、情境应对、群友共同特点、边界），丢弃好感度、affinity、toolbox、`character_reply`、status/think、群友 ID 目录、名词解释等运行时内容；
-- 不需要维护两份文件：DSH 和 ChatLuna 可以读同一个 `foxy3.yml`。
+- 不需要维护两份文件：DSH 和 ChatLuna 可以读同一个 `preset.yml`。
 
 投影用 `complete: true` 和 `interpolate: false` 注册，所以：
 
@@ -95,17 +95,17 @@ Foxy 左侧面板提供常用设置，保存到：
 %USERPROFILE%\.dsh\foxy\memory\entries.jsonl
 ```
 
-每条记录带 `presetId`、`sessionId`、`platform=dsh`、`sourceLabel=DSH`、说话人和时间。桥提炼出的长期记忆会明确写“在 DSH 私聊里”，例如：
+每条记录带 `presetId`、`sessionId`、`platform=dsh`、`sourceLabel=DSH`、说话人和时间。桥提炼出的长期记忆会保留真实平台与来源，不再使用固定的“我记得在 DSH 私聊里”前缀：
 
 ```text
-我记得在 DSH 私聊里，kunfox 说今天在调 Foxy 的记忆桥。
+我在 DSH 私聊里看到 用户 提到今天在调 Foxy 的记忆桥。
 ```
 
 下一轮 Foxy 会话会把最近 N 条注入 `[长期记忆]`。默认值是 20 条，可用 `memoryContextEntries` 调整。
 
-记忆不是逐条写：`dsh-foxy-memory` 会按 `batchSize`（默认 8）和 `flushIntervalMs`（默认 30 秒）调用桥的 `/ingest`，由模型提炼成中文、Foxy 第一人称的长期记忆。提示词要求写成“我记得在 DSH 私聊里，……”，并避免“kunfox 说/回复”这种流水账。左侧面板的「记忆保存」可以改桥地址、token、预设、批次、提取模型，不必改 profile 文件。
+记忆不是逐条写：`dsh-foxy-memory` 会按 `batchSize`（默认 8）和 `flushIntervalMs`（默认 30 秒）调用桥的 `/ingest`，由模型提炼成中文、Foxy 第一人称的长期记忆。提示词要求保留平台、事件类型与时间，避免“用户 说/回复”这种流水账。左侧面板的「记忆保存」可以改桥地址、token、预设、批次、提取模型，不必改 profile 文件。
 
-它不依赖 ChatLuna。如果要接 `chatluna-livingmemory`，安装 `koishi-plugin-foxy-memory-bridge`，在设置页填 `bridgeUrl`、`bridgeToken`、`bridgePresetId`。桥通过 `ctx.chatluna_living_memory.createMemory(...)` 写入 `foxy3（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。
+它不依赖 ChatLuna。如果要接跨平台记忆，安装 `koishi-plugin-chatluna-foxy-memory`，在设置页填 `bridgeUrl`、`bridgeToken`、`bridgePresetId`。新插件通过 `/foxy-memory/*` 直接写入 `preset（Character）` 池；**不要直接写 SQLite**，否则会绕过 speaker key、profile 和 PGlite 向量索引。旧 `koishi-plugin-foxy-memory-bridge` 仅保留迁移兼容。
 
 ## 配置
 
@@ -117,6 +117,7 @@ Agent preset 子插件（`dsh-foxy/preset`）：
 | --- | --- | --- |
 | `presetId` | `预设` | 读取哪个预设文件 |
 | `presetPath` | 空 | 直接指定预设路径；优先于 `presetId` |
+| `promptSuffix` | 空 | 追加到预设 persona 后的自定义要求；留空不追加 |
 | `enableTools` | `false` | 是否让 Foxy 会话继承 DSH 工具 |
 | `includeRuntimeContext` | `false` | 是否附加 DSH 运行时上下文 |
 | `memoryContextEntries` | `20` | 注入多少条长期记忆 |
