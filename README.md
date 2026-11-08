@@ -9,10 +9,17 @@ DSH 会话（选择 Foxy preset）
         │
    dsh-foxy（host registry + agent preset）
         │
-   dsh-foxy-memory（可选，本地记忆）
+   dsh-foxy-memory（可选，本地记忆 / HTTP provider）
         │
-   koishi-plugin-foxy-memory-bridge（可选，LivingMemory 桥）
+   koishi-plugin-chatluna-foxy-memory（可选，QQ 侧与跨平台记忆中枢）
 ```
+
+## 依赖关系
+
+- 必需：`dsh-foxy` 本身。
+- 可选记忆：`dsh-foxy-memory`；它可独立使用本地 JSONL，也可通过 `bridgeUrl` 连接 `koishi-plugin-chatluna-foxy-memory`。
+- 平台子插件：`dsh-foxy-bili`、`dsh-foxy-weibo`，均依赖 `dsh-foxy` 与可选的 `dsh-foxy-memory`。
+- `koishi-plugin-foxy-memory-bridge` 是旧方案，已由 `koishi-plugin-chatluna-foxy-memory` 的 `/foxy-memory/*` 兼容层取代；保留仅为迁移。
 
 ## 安装
 
