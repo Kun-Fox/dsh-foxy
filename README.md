@@ -2,7 +2,7 @@
 
 Foxy 是 DeepSeek Harness 的一个 **agent preset**：它把预设投影成该会话的系统提示词，并把记忆、平台、能力留给独立子插件。
 
-它**不是**另一个聊天应用，也没有自己的聊天面板/API。聊天使用 DSH 原生会话；左侧栏的 Foxy 面板是配置页，用来改预设、记忆保存方式和桥接参数。
+它**不是**另一个聊天应用，也没有自己的聊天面板/API。聊天使用 DSH 原生会话；左侧栏只保留一个 **Foxy** 入口，打开后用一个控制台标签页统一管理主设置和各子插件配置。
 
 ```
 DSH 会话（选择 Foxy preset）
@@ -47,9 +47,31 @@ C:\Users\<you>\.dsh\profiles\desktop\node_modules\dsh-foxy
 
 `enableTools: false`（默认）时，Foxy 会话会隐藏继承的工具；需要工具时在左侧 Foxy 设置页打开，保存后对新会话生效。
 
+## 统一 Foxy 控制台
+
+左侧栏只显示一个 **Foxy**。打开后顶部标签页分别是：
+
+- **Foxy**：主设置（预设、工具、记忆保存）；
+- **B站**、**微博**、**记忆**、**OOPZ**、**游戏**：安装了对应子插件才显示。
+
+标签页复用各子插件原有的 React 面板，不是 iframe，也不会重复实现表单。切换标签会保留已经打开的页面状态（例如填了一半的设置），当前标签会记在浏览器 `localStorage` 里，下次打开 Foxy 仍停在原标签。各子插件仍保留 DSH 设置页中的 `settings.section`，作为控制台不可用时的后备入口。
+
+子插件通过全局注册表登记页面：
+
+```js
+window.__FOXY_CONSOLE__.pages.push({
+  id: 'dsh-foxy-game',
+  label: '游戏',
+  order: 18,
+  Component: GamePage,
+})
+```
+
+`dsh-foxy` 只负责标签壳和页面容器；子插件被禁用时对应标签消失，不会留下空白入口。
+
 ## 左侧栏设置
 
-Foxy 左侧面板提供常用设置，保存到：
+Foxy 控制台的主设置保存到：
 
 ```text
 %USERPROFILE%\.dsh\foxy\settings.json
